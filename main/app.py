@@ -16,7 +16,7 @@ main = Blueprint('main', __name__)
 def create_app(settings=DevSettings):
     app = Flask(__name__)
     # Setup the Flask-JWT-Extended extension
-    app.config["JWT_SECRET_KEY"] = "assmzfadiab"
+    app.config["JWT_SECRET_KEY"] = "qlTn0bKAHYwxXAQA2jqLzjuiM9ueyL"
     jwt = JWTManager(app)
 
     # Utiliser la configuration (settings).
