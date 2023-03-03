@@ -2,7 +2,7 @@ from flask import Flask, Blueprint
 
 from main.extensions import db, migrate, cors
 from main.settings import DevSettings
-from flask_jwt_extended import JWTManager
+# from flask_jwt_extended import JWTManager
 
 from main.modules import user, product
 
@@ -18,7 +18,7 @@ def create_app(settings=DevSettings):
     app.config['SECRET_KEY']= 'microhack2023'
     # Setup the Flask-JWT-Extended extension
     app.config["JWT_SECRET_KEY"] = "qlTn0bKAHYwxXAQA2jqLzjuiM9ueyL"
-    jwt = JWTManager(app)
+    # jwt = JWTManager(app)
 
     # Utiliser la configuration (settings).
     app.config.from_object(settings)
