@@ -16,14 +16,14 @@ class Requirement(BaseModel):
 
     ideaholder_id = db.Column(db.Integer, db.ForeignKey(
         'ideaholders.id'), primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey(
-        'products.id'), primary_key=True)
+    business_id = db.Column(db.Integer, db.ForeignKey(
+        'businesses.id'), primary_key=True)
 
 class ProductChain(BaseModel):
     __tablename__ = 'product_chain'
 
-    ideaholder_id = db.Column(db.Integer, db.ForeignKey(
-        'ideaholders.id'), primary_key=True)
+    Productfit_id = db.Column(db.Integer, db.ForeignKey(
+        'productfits.id'), primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey(
         'products.id'), primary_key=True)
 
@@ -44,10 +44,10 @@ class BusinessBase(UserBase):
     location= db.Column(db.String, nullable=False)
     companySize= db.Column(db.CHAR, nullable=False)
     incomeSize= db.Column(db.CHAR, nullable=False)
+    public= db.Column(db.Boolean, nullable=False)
     # lacking product supply
     supplies= db.relationship(
         'Product', secondary='supplies', backref=db.backref('buisnesses', lazy='dynamic'))
-
 
 
 
@@ -59,4 +59,6 @@ class IdeaHolderBase(UserBase):
     requirements= db.relationship(
         'Product', secondary='requirements', backref=db.backref('ideaholders', lazy='dynamic'))
     #laking production chain
-    product_chain= db.relationship('Business', secondary='product_chain', backref=db.backref('ideaholders', lazy='dynamic'))
+    chain = db.relationship('ProductFitBase', secondary='chain', backref=db.backref('ideaholders', lazy='dynamic'))
+    # product_chain= db.relationship('Business', secondary='product_chain', backref=db.backref('ideaholders', lazy='dynamic'))
+

@@ -13,3 +13,12 @@ class ProductBase(BaseModel, HasCreatedAt, HasUpdatedAt):
     quality = db.Column(db.String, nullable=False)
 
 
+
+class ProductFitBase(BaseModel):
+    __tablename__='productfits'
+    id = db.Column(db.Integer, primary_key=True)
+    product_id= db.Column(db.Integer, db.ForeignKey('products.id'))
+    business_chain = db.relationship('BusinessBase', secondary='business_chain', backref=db.backref('productfits', lazy='dynamic'))
+
+    associated_product= db.relationship("ProductBase")
+
