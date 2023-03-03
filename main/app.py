@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint
 
-from main.extensions import db, migrate, cors
+from main.extensions import db, migrate, cors, jwt
 from main.settings import DevSettings
 # from flask_jwt_extended import JWTManager
 
@@ -26,6 +26,7 @@ def create_app(settings=DevSettings):
     # Init SQLAlchemy.
     db.init_app(app)
     cors.init_app(app)
+    jwt.init_app(app)
 
     # Init Migrate.
     migrate.init_app(app, db)

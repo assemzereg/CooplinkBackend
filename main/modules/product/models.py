@@ -13,7 +13,8 @@ class ProductBase(BaseModel, HasCreatedAt, HasUpdatedAt):
     __tablename__ = 'products'
     id = db.Column(db.Integer, primary_key=True)
     name= db.Column(db.String, nullable=True)
-    quantityPerHour= db.Column(db.Float, nullable=False)
+    # quantityPerHour= db.Column(db.String, nullable=False)
+    productionPerHour= db.Column(db.String, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     quality = db.Column(db.String, nullable=False)
 

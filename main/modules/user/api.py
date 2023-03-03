@@ -10,8 +10,8 @@ from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 
 # Import the SQLAlchemy models and schemas
-from models import db, BusinessBase, IdeaHolderBase
-from schemas import BusinessBaseSchema, IdeaHolderBaseSchema
+from main.modules.user.models import db, BusinessBase, IdeaHolderBase, ProductChain,Requirement,Supplie,UserBase
+from main.modules.user.schemas import BusinessBaseSchema, IdeaHolderBaseSchema
 idea_holder_base_schema = IdeaHolderBaseSchema()
 idea_holder_base_list_schema = IdeaHolderBaseSchema(many=True)
 

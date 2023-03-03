@@ -16,7 +16,7 @@ class Requirement(BaseModel):
 
     ideaholder_id = db.Column(db.Integer, db.ForeignKey(
         'ideaholders.id'), primary_key=True)
-    business_id = db.Column(db.Integer, db.ForeignKey(
+    product_id = db.Column(db.Integer, db.ForeignKey(
         'products.id'), primary_key=True)
 
 class ProductChain(BaseModel,HasCreatedAt, HasUpdatedAt):
@@ -38,7 +38,7 @@ class UserBase(BaseModel, HasCreatedAt, HasUpdatedAt):
 
 
 class BusinessBase(UserBase):
-    __tablename__ = 'buisnesses'
+    __tablename__ = 'businesses'
     logo = db.Column(db.String)
     industry= db.Column(db.String, nullable=False)
     location= db.Column(db.String, nullable=False)
@@ -46,7 +46,7 @@ class BusinessBase(UserBase):
     incomeSize= db.Column(db.CHAR, nullable=False)
     public= db.Column(db.Boolean, nullable=False)
     supplies= db.relationship(
-        'Product', secondary='supplies', backref=db.backref('buisnesses', lazy='dynamic'))
+        'Product', secondary='supplies', backref=db.backref('businesses', lazy='dynamic'))
 
 
 
