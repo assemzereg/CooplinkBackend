@@ -1,53 +1,41 @@
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
-from marshmallow import fields
-from app import db
-from models import Supplie, Requirement, ProductChain, BusinessBase, IdeaHolderBase
-from main.modules.product.models import ProductBase
+from marshmallow import Schema, fields
 
-class SupplieSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = Supplie
-        sqla_session = db.session
-        load_instance = True
+class SupplySchema(Schema):
+    business_id = fields.Integer(required=True)
+    product_id = fields.Integer(required=True)
 
 
-class RequirementSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = Requirement
-        sqla_session = db.session
-        load_instance = True
+class RequirementSchema(Schema):
+    ideaholder_id = fields.Integer(required=True)
+    business_id = fields.Integer(required=True)
 
 
-class ProductChainSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = ProductChain
-        sqla_session = db.session
-        load_instance = True
+class ProductChainSchema(Schema):
+    Productfit_id = fields.Integer(required=True)
+    product_id = fields.Integer(required=True)
 
 
-class BusinessBaseSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = BusinessBase
-        sqla_session = db.session
-        load_instance = True
-
-    # Include related supplies in the output
-    supplies = fields.Nested('ProductSchema', many=True)
+class UserBaseSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    username = fields.String(required=True)
+    email = fields.String(required=True)
+    password = fields.String(required=True)
 
 
-class IdeaHolderBaseSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = IdeaHolderBase
-        sqla_session = db.session
-        load_instance = True
+class BusinessBaseSchema(UserBaseSchema):
+    logo = fields.String()
+    industry = fields.String(required=True)
+    location = fields.String(required=True)
+    companySize = fields.String(required=True)
+    incomeSize = fields.String(required=True)
+    public = fields.Boolean(required=True)
+    supplies = fields.List(fields.Nested('ProductBaseSchema'))
 
-    # Include related requirements and product_chain in the output
-    requirements = fields.Nested('ProductSchema', many=True)
-    product_chain = fields.Nested('BusinessBaseSchema', many=True)
+
+class IdeaHolderBaseSchema(UserBaseSchema):
+    budget = fields.Integer(required=True)
+    productionquantity = fields.Integer(required=True)
+    requirements = fields.List(fields.Nested('ProductBaseSchema'))
+    chain = fields.List(fields.Nested('ProductFitBaseSchema'))
 
 
-class ProductSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = ProductBase
-        sqla_session = db.session
-        load_instance = True
