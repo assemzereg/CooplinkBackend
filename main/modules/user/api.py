@@ -1,5 +1,5 @@
 # from flask import Blueprint
-from flask import  Blueprint, request, jsonify, make_response
+from flask import  Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
@@ -7,10 +7,13 @@ import os
 from functools import wraps
 from datetime import datetime, timedelta
 from marshmallow import ValidationError
+from sqlalchemy.exc import IntegrityError
 
 # Import the SQLAlchemy models and schemas
 from models import db, BusinessBase, IdeaHolderBase
 from schemas import BusinessBaseSchema, IdeaHolderBaseSchema
+idea_holder_base_schema = IdeaHolderBaseSchema()
+idea_holder_base_list_schema = IdeaHolderBaseSchema(many=True)
 
 
 blueprint = Blueprint('user', __name__, url_prefix='/api')
@@ -85,6 +88,50 @@ def ideaholder_authenticate():
         return jsonify({'token': token.decode('UTF-8')})
     return jsonify({'message': 'Invalid email or password'})
 
+
+@blueprint.route('/ideaholder/idea_holder_bases', methods=['GET'])
+def get_idea_holder_bases():
+    idea_holder_bases = IdeaHolderBase.query.all()
+    return idea_holder_base_list_schema.jsonify(idea_holder_bases)
+
+@blueprint.route('/ideaholder/idea_holder_bases/<int:idea_holder_base_id>', methods=['GET'])
+def get_idea_holder_base(idea_holder_base_id):
+    idea_holder_base = IdeaHolderBase.query.get_or_404(idea_holder_base_id)
+    return idea_holder_base_schema.jsonify(idea_holder_base)
+
+@blueprint.route('/ideaholder/idea_holder_bases', methods=['POST'])
+def create_idea_holder_base():
+    try:
+        idea_holder_base = idea_holder_base_schema.load(request.json, session=db.session)
+        db.session.add(idea_holder_base)
+        db.session.commit()
+        return idea_holder_base_schema.jsonify(idea_holder_base), 201
+    except ValidationError as e:
+        return jsonify(e.messages), 400
+    except IntegrityError as e:
+        db.session.rollback()
+        return jsonify({'error': 'Email already exists.'}), 400
+
+@blueprint.route('/ideaholder/idea_holder_bases/<int:idea_holder_base_id>', methods=['PUT'])
+def update_idea_holder_base(idea_holder_base_id):
+    idea_holder_base = IdeaHolderBase.query.get_or_404(idea_holder_base_id)
+    try:
+        idea_holder_base = idea_holder_base_schema.load(request.json, instance=idea_holder_base, session=db.session)
+        db.session.commit()
+        return idea_holder_base_schema.jsonify(idea_holder_base)
+    except ValidationError as e:
+        return jsonify(e.messages), 400
+    except IntegrityError as e:
+        db.session.rollback()
+        return jsonify({'error': 'Email already exists.'}), 400
+
+@blueprint.route('/ideaholder/idea_holder_bases/<int:idea_holder_base_id>', methods=['DELETE'])
+def delete_idea_holder_base(idea_holder_base_id):
+    idea_holder_base = IdeaHolderBase.query.get_or_404(idea_holder_base_id)
+    db.session.delete(idea_holder_base)
+    db.session.commit()
+    return '', 204
+
 #business api
 @blueprint.route('/business/signup', methods=['POST'])
 def business_signup():
@@ -110,6 +157,41 @@ def business_authenticate():
         token = jwt.encode({'id': business.id, 'exp': datetime.utcnow() + timedelta(hours=24)}, SECRET_KEY)
         return jsonify({'token': token.decode('UTF-8')})
     return jsonify({'message': 'Invalid email or password'})
+
+
+@blueprint.route('/businesses/<int:id>', methods=['GET'])
+def get_business(id):
+    business = BusinessBase.query.get(id)
+    if business:
+        result = BusinessBaseSchema.dump(business)
+        return jsonify(result)
+    return jsonify({'message': 'Business not found'}), 404
+
+
+@blueprint.route('/businesses/<int:id>', methods=['PUT'])
+def update_business(id):
+    business = BusinessBase.query.get(id)
+    if business:
+        try:
+            updated_business = BusinessBaseSchema.load(request.json, session=db.session, instance=business)
+            db.session.commit()
+            result = BusinessBaseSchema.dump(updated_business)
+            return jsonify(result)
+        except ValidationError as e:
+            return jsonify({'message': str(e)}), 400
+    return jsonify({'message': 'Business not found'}), 404
+
+
+@blueprint.route('/businesses/<int:id>', methods=['DELETE'])
+def delete_business(id):
+    business = BusinessBase.query.get(id)
+    if business:
+        db.session.delete(business)
+        db.session.commit()
+        return '', 204
+    return jsonify({'message': 'Business not found'}), 404
+
+
 
 
 
