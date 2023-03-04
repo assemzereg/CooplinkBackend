@@ -17,7 +17,7 @@ def predict(budjet,mass,products):
             return 'high'
         elif price >=10 and price<50 :
             return 'medium'
-        elif price >=1 and price<10 :
+        elif price >0 and price<10 :
             return 'low'
     def get_quantity(mass):
         if mass >=100 :
