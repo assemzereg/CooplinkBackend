@@ -75,7 +75,7 @@ def register_modules(app):
 @main.route('/getchain', methods=['POST'])
 def getchain():
     data = request.get_json()
-    price_unit=(data['budget']/len(data['products_list']))/data['mass']
+    price_unit=(data['budget']/len(data['prod']))/data['mass']
     if price_unit<1:
         return {'data': [], 'msg': 'budget too low'}
     print('data',data)
