@@ -10,7 +10,6 @@ class Supplie(BaseModel):
     product_id = db.Column(db.Integer, db.ForeignKey(
         'products.id'), primary_key=True)
 
-
 class Requirement(BaseModel):
     __tablename__ = 'requirements'
 
@@ -46,7 +45,7 @@ class BusinessBase(UserBase):
     incomeSize= db.Column(db.CHAR, nullable=False)
     public= db.Column(db.Boolean, nullable=False)
     supplies= db.relationship(
-        'Product', secondary='supplies', backref=db.backref('businesses', lazy='dynamic'))
+        'ProductBase', secondary='supplies', backref=db.backref('businesses', lazy='dynamic'))
 
 
 
@@ -55,6 +54,6 @@ class IdeaHolderBase(UserBase):
     budget = db.Column(db.Integer, nullable=False)
     productionquantity= db.Column(db.Integer, nullable=False)
     requirements= db.relationship(
-        'Product', secondary='requirements', backref=db.backref('ideaholders', lazy='dynamic'))
+        'ProductBase', secondary='requirements', backref=db.backref('ideaholders', lazy='dynamic'))
     chain = db.relationship('ProductFitBase', secondary='product_chain', backref=db.backref('ideaholders', lazy='dynamic'))
 
